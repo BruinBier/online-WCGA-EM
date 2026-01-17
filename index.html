@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WCAG-EM Rapport Tool - Toegankelijkheidsevaluatie</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1>WCAG-EM Rapport Tool</h1>
+            <p class="subtitle">Toegankelijkheidsevaluatie volgens WCAG-EM methodologie</p>
+        </div>
+    </header>
+
+    <nav class="step-nav" aria-label="Evaluatiestappen">
+        <div class="container">
+            <ol class="step-list">
+                <li><button class="step-btn active" data-step="1"><span class="step-num">1</span> Scope definiëren</button></li>
+                <li><button class="step-btn" data-step="2"><span class="step-num">2</span> Verkennen</button></li>
+                <li><button class="step-btn" data-step="3"><span class="step-num">3</span> Steekproef</button></li>
+                <li><button class="step-btn" data-step="4"><span class="step-num">4</span> Audit</button></li>
+                <li><button class="step-btn" data-step="5"><span class="step-num">5</span> Rapport</button></li>
+            </ol>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <!-- Stap 1: Scope definiëren -->
+            <section id="step-1" class="step-panel active">
+                <h2>Stap 1: Scope definiëren</h2>
+                <p class="step-description">Definieer de scope van de evaluatie, inclusief de website, het WCAG-conformiteitsniveau en aanvullende vereisten.</p>
+
+                <fieldset class="form-section">
+                    <legend>Website informatie</legend>
+
+                    <div class="form-group">
+                        <label for="site-name">Website naam *</label>
+                        <input type="text" id="site-name" required placeholder="Bijv. Gemeente Amsterdam">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="site-scope">Website scope *</label>
+                        <input type="url" id="site-scope" required placeholder="https://www.example.nl">
+                        <small>De URL van de website of het deel dat geëvalueerd wordt</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="site-scope-description">Scope omschrijving</label>
+                        <textarea id="site-scope-description" rows="3" placeholder="Beschrijf welke delen van de website in de evaluatie zijn opgenomen..."></textarea>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-section">
+                    <legend>WCAG Conformiteit</legend>
+
+                    <div class="form-group">
+                        <label for="wcag-version">WCAG Versie *</label>
+                        <select id="wcag-version" required>
+                            <option value="WCAG22">WCAG 2.2</option>
+                            <option value="WCAG21">WCAG 2.1</option>
+                            <option value="WCAG20">WCAG 2.0</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="conformance-level">Conformiteitsniveau *</label>
+                        <select id="conformance-level" required>
+                            <option value="AA">AA (Aanbevolen)</option>
+                            <option value="A">A</option>
+                            <option value="AAA">AAA</option>
+                        </select>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-section">
+                    <legend>Evaluatie details</legend>
+
+                    <div class="form-group">
+                        <label for="eval-commissioner">Opdrachtgever</label>
+                        <input type="text" id="eval-commissioner" placeholder="Organisatie die de evaluatie heeft aangevraagd">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="evaluator-name">Evaluator naam *</label>
+                        <input type="text" id="evaluator-name" required placeholder="Naam van de evaluator">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="evaluator-org">Evaluator organisatie</label>
+                        <input type="text" id="evaluator-org" placeholder="Organisatie van de evaluator">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eval-date">Evaluatiedatum *</label>
+                        <input type="date" id="eval-date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="additional-requirements">Aanvullende vereisten</label>
+                        <textarea id="additional-requirements" rows="3" placeholder="Eventuele aanvullende toegankelijkheidsvereisten..."></textarea>
+                    </div>
+                </fieldset>
+            </section>
+
+            <!-- Stap 2: Verkennen -->
+            <section id="step-2" class="step-panel">
+                <h2>Stap 2: Doelwebsite verkennen</h2>
+                <p class="step-description">Identificeer de essentiële functionaliteiten, pagina types en gebruikte technologieën van de website.</p>
+
+                <fieldset class="form-section">
+                    <legend>Essentiële functionaliteiten</legend>
+                    <p class="field-help">Voeg de belangrijkste functionaliteiten van de website toe die geëvalueerd moeten worden.</p>
+
+                    <div id="functionalities-list" class="dynamic-list"></div>
+
+                    <div class="add-item-row">
+                        <input type="text" id="new-functionality" placeholder="Nieuwe functionaliteit...">
+                        <button type="button" class="btn btn-secondary" onclick="app.addFunctionality()">Toevoegen</button>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-section">
+                    <legend>Technologieën</legend>
+                    <p class="field-help">Selecteer de technologieën die op de website worden gebruikt.</p>
+
+                    <div class="checkbox-grid">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="technology" value="HTML5"> HTML5
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="technology" value="CSS"> CSS
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="technology" value="JavaScript"> JavaScript
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="technology" value="WAI-ARIA"> WAI-ARIA
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="technology" value="SVG"> SVG
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="technology" value="PDF"> PDF
+                        </label>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label for="other-technologies">Overige technologieën</label>
+                        <input type="text" id="other-technologies" placeholder="Andere technologieën, gescheiden door komma's">
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-section">
+                    <legend>User agents en hulptechnologieën</legend>
+
+                    <div class="form-group">
+                        <label for="browsers-tested">Geteste browsers</label>
+                        <input type="text" id="browsers-tested" placeholder="Bijv. Chrome 120, Firefox 121, Safari 17">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="assistive-tech">Hulptechnologieën</label>
+                        <input type="text" id="assistive-tech" placeholder="Bijv. NVDA, VoiceOver, JAWS">
+                    </div>
+                </fieldset>
+            </section>
+
+            <!-- Stap 3: Steekproef selecteren -->
+            <section id="step-3" class="step-panel">
+                <h2>Stap 3: Representatieve steekproef selecteren</h2>
+                <p class="step-description">Selecteer de webpagina's die in de evaluatie worden opgenomen. Zorg voor een representatieve selectie.</p>
+
+                <fieldset class="form-section">
+                    <legend>Gestructureerde steekproef</legend>
+                    <p class="field-help">Voeg pagina's toe die de belangrijkste onderdelen van de website vertegenwoordigen.</p>
+
+                    <table class="sample-table" id="structured-sample-table">
+                        <thead>
+                            <tr>
+                                <th>Pagina titel</th>
+                                <th>URL</th>
+                                <th>Type/Beschrijving</th>
+                                <th>Acties</th>
+                            </tr>
+                        </thead>
+                        <tbody id="structured-sample-list"></tbody>
+                    </table>
+
+                    <div class="add-page-form">
+                        <div class="form-row">
+                            <input type="text" id="new-page-title" placeholder="Pagina titel">
+                            <input type="url" id="new-page-url" placeholder="https://...">
+                            <input type="text" id="new-page-type" placeholder="Type (bijv. Homepage)">
+                            <button type="button" class="btn btn-secondary" onclick="app.addSamplePage('structured')">Toevoegen</button>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-section">
+                    <legend>Willekeurige steekproef</legend>
+                    <p class="field-help">Voeg willekeurig geselecteerde pagina's toe voor een breder beeld.</p>
+
+                    <table class="sample-table" id="random-sample-table">
+                        <thead>
+                            <tr>
+                                <th>Pagina titel</th>
+                                <th>URL</th>
+                                <th>Beschrijving</th>
+                                <th>Acties</th>
+                            </tr>
+                        </thead>
+                        <tbody id="random-sample-list"></tbody>
+                    </table>
+
+                    <div class="add-page-form">
+                        <div class="form-row">
+                            <input type="text" id="random-page-title" placeholder="Pagina titel">
+                            <input type="url" id="random-page-url" placeholder="https://...">
+                            <input type="text" id="random-page-desc" placeholder="Beschrijving">
+                            <button type="button" class="btn btn-secondary" onclick="app.addSamplePage('random')">Toevoegen</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </section>
+
+            <!-- Stap 4: Audit -->
+            <section id="step-4" class="step-panel">
+                <h2>Stap 4: Steekproef auditen</h2>
+                <p class="step-description">Evalueer elke pagina tegen de WCAG-succescriteria.</p>
+
+                <div class="audit-controls">
+                    <div class="form-group">
+                        <label for="audit-page-select">Selecteer pagina om te auditen:</label>
+                        <select id="audit-page-select" onchange="app.selectAuditPage()">
+                            <option value="">-- Kies een pagina --</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-controls">
+                        <label>Filter criteria:</label>
+                        <select id="filter-principle" onchange="app.filterCriteria()">
+                            <option value="all">Alle principes</option>
+                            <option value="perceivable">1. Waarneembaar</option>
+                            <option value="operable">2. Bedienbaar</option>
+                            <option value="understandable">3. Begrijpelijk</option>
+                            <option value="robust">4. Robuust</option>
+                        </select>
+
+                        <select id="filter-level" onchange="app.filterCriteria()">
+                            <option value="all">Alle niveaus</option>
+                            <option value="A">Niveau A</option>
+                            <option value="AA">Niveau AA</option>
+                            <option value="AAA">Niveau AAA</option>
+                        </select>
+
+                        <select id="filter-result" onchange="app.filterCriteria()">
+                            <option value="all">Alle resultaten</option>
+                            <option value="untested">Niet getest</option>
+                            <option value="passed">Geslaagd</option>
+                            <option value="failed">Niet geslaagd</option>
+                            <option value="cantTell">Kan niet bepalen</option>
+                            <option value="notApplicable">Niet van toepassing</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="audit-content" class="audit-content">
+                    <p class="no-page-selected">Selecteer eerst een pagina om te auditen.</p>
+                </div>
+            </section>
+
+            <!-- Stap 5: Rapport -->
+            <section id="step-5" class="step-panel">
+                <h2>Stap 5: Rapport</h2>
+                <p class="step-description">Bekijk een samenvatting van de evaluatie en exporteer het rapport.</p>
+
+                <div class="report-summary">
+                    <h3>Evaluatie samenvatting</h3>
+
+                    <div class="summary-cards">
+                        <div class="summary-card">
+                            <h4>Website</h4>
+                            <p id="summary-site-name">-</p>
+                        </div>
+                        <div class="summary-card">
+                            <h4>Conformiteitsdoel</h4>
+                            <p id="summary-conformance">-</p>
+                        </div>
+                        <div class="summary-card">
+                            <h4>Pagina's getest</h4>
+                            <p id="summary-pages">-</p>
+                        </div>
+                        <div class="summary-card">
+                            <h4>Evaluatiedatum</h4>
+                            <p id="summary-date">-</p>
+                        </div>
+                    </div>
+
+                    <h3>Resultaten overzicht</h3>
+                    <div class="results-overview">
+                        <div class="result-stat passed">
+                            <span class="stat-number" id="stat-passed">0</span>
+                            <span class="stat-label">Geslaagd</span>
+                        </div>
+                        <div class="result-stat failed">
+                            <span class="stat-number" id="stat-failed">0</span>
+                            <span class="stat-label">Niet geslaagd</span>
+                        </div>
+                        <div class="result-stat cant-tell">
+                            <span class="stat-number" id="stat-cant-tell">0</span>
+                            <span class="stat-label">Kan niet bepalen</span>
+                        </div>
+                        <div class="result-stat not-applicable">
+                            <span class="stat-number" id="stat-not-applicable">0</span>
+                            <span class="stat-label">Niet van toepassing</span>
+                        </div>
+                        <div class="result-stat untested">
+                            <span class="stat-number" id="stat-untested">0</span>
+                            <span class="stat-label">Niet getest</span>
+                        </div>
+                    </div>
+
+                    <h3>Conformiteitsresultaat</h3>
+                    <div class="conformance-result" id="conformance-result">
+                        <p>Start de audit om het conformiteitsresultaat te zien.</p>
+                    </div>
+                </div>
+
+                <fieldset class="form-section">
+                    <legend>Specifieke bevindingen</legend>
+                    <div class="form-group">
+                        <label for="exec-summary">Samenvatting</label>
+                        <textarea id="exec-summary" rows="4" placeholder="Korte samenvatting van de evaluatieresultaten..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="eval-specifics">Evaluatie specificaties</label>
+                        <textarea id="eval-specifics" rows="4" placeholder="Aanvullende opmerkingen over de evaluatie..."></textarea>
+                    </div>
+                </fieldset>
+
+                <div class="export-section">
+                    <h3>Exporteren</h3>
+                    <div class="export-buttons">
+                        <button type="button" class="btn btn-primary" onclick="app.exportHTML()">
+                            Exporteer als HTML
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="app.exportJSON()">
+                            Exporteer als JSON
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <aside class="sidebar">
+        <div class="sidebar-content">
+            <h3>Bestand</h3>
+            <div class="file-actions">
+                <button type="button" class="btn btn-secondary btn-block" onclick="app.saveEvaluation()">
+                    Evaluatie opslaan
+                </button>
+                <button type="button" class="btn btn-secondary btn-block" onclick="document.getElementById('load-file').click()">
+                    Evaluatie laden
+                </button>
+                <input type="file" id="load-file" accept=".json" style="display: none" onchange="app.loadEvaluation(event)">
+                <button type="button" class="btn btn-secondary btn-block" onclick="app.newEvaluation()">
+                    Nieuwe evaluatie
+                </button>
+            </div>
+
+            <h3>Navigatie</h3>
+            <div class="nav-buttons">
+                <button type="button" class="btn btn-secondary btn-block" id="prev-step-btn" onclick="app.previousStep()" disabled>
+                    &larr; Vorige stap
+                </button>
+                <button type="button" class="btn btn-primary btn-block" id="next-step-btn" onclick="app.nextStep()">
+                    Volgende stap &rarr;
+                </button>
+            </div>
+
+            <h3>Voortgang</h3>
+            <div class="progress-info">
+                <div class="progress-item">
+                    <span>Scope</span>
+                    <span class="progress-status" id="progress-scope">Incompleet</span>
+                </div>
+                <div class="progress-item">
+                    <span>Verkenning</span>
+                    <span class="progress-status" id="progress-explore">Incompleet</span>
+                </div>
+                <div class="progress-item">
+                    <span>Steekproef</span>
+                    <span class="progress-status" id="progress-sample">Incompleet</span>
+                </div>
+                <div class="progress-item">
+                    <span>Audit</span>
+                    <span class="progress-status" id="progress-audit">Incompleet</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <footer class="footer">
+        <div class="container">
+            <p>WCAG-EM Rapport Tool - Gebaseerd op de <a href="https://www.w3.org/WAI/eval/report-tool/" target="_blank">W3C WAI WCAG-EM Report Tool</a></p>
+            <p>Deze tool draait volledig in de browser. Geen data wordt naar een server verzonden.</p>
+        </div>
+    </footer>
+
+    <script src="js/wcag-criteria.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
